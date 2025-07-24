@@ -50,16 +50,6 @@ or if you use npm
     cd  src/DarkWebScraperServer
     python manage.py runserver 0.0.0.0:8000
 
-## Enter the IPv4 address of the PC in the client/.env file
-
-Run "ipconfig" command in Windows to find the IPv4 address.
-Set the IP value in .env file to that value.
-example:
-
-    IP=192.168.0.10
-
-This is so that the mobile app client can connect to the django server on the PC.
-
 ## Run the client
 
 Make sure the android phone is connected to the PC and its ID is listed with this command : "adb devices"
