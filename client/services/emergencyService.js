@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useState, useRef} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   selectCollisionDetected,
@@ -9,27 +9,47 @@ import ApiService from './apiService';
 import voicemessageService from '../services/voicemessageService';
 import {SentVmsFolderPath} from '../utils/constants';
 
-import {updateDrivingScore} from '../redux/slices/trafficContextSlice';
+import {
+  updateTrafficCondition,
+  updateLegDistances,
+  updateLegDurations,
+  updateSpeedReadingIntervals,
+  updateDestinationDistance,
+  updateCurrentSpeed,
+  updateDrivingDistance,
+  incrementDrivingDistance,
+  updateCognitiveWorkload,
+  updateDrivingIntervalRef,
+  selectDrivingDistance,
+  selectCognitiveWorkload,
+  selectSpeedReadingIntervals,
+  selectDrivingIntervalRef,
+  selectDrivingScore,
+  updateDrivingScore,
+} from '../redux/slices/trafficContextSlice';
+
+const CollisionCheckInterval = 3 * 1000;
 
 export default function emergencyService() {
   const dispatch = useDispatch();
   const _collisionDetected = useSelector(selectCollisionDetected);
-  const {generateSampleVoiceMessage} = voicemessageService();
+  const _drivingScore = useSelector(selectDrivingScore);
+  const {generateVoiceMessage} = voicemessageService();
   const {doCollisionCheck, upload} = ApiService();
   const intervalRef = useRef(null);
 
-  // useEffect(() => {
-  //   // initiate collision detection
+  useEffect(() => {
+    // initiate collision detection
 
-  //   intervalRef.current = setInterval(() => {
-  //     collisionCheck();
-  //   }, CollisionCheckInterval);
+    intervalRef.current = setInterval(() => {
+      collisionCheck();
+    }, CollisionCheckInterval);
 
-  //   return () => {
-  //     // stop collision detection
-  //     clearInterval(intervalRef.current);
-  //   };
-  // }, []);
+    return () => {
+      // stop collision detection
+      clearInterval(intervalRef.current);
+    };
+  }, []);
 
   const collisionCheck = async () => {
     try {
@@ -76,7 +96,7 @@ export default function emergencyService() {
       'handleEmergency() collision detected! sending voiecmail to emergency contact.',
     );
     //create a vm to send to the caller and save as mp3 file
-    const ff = await generateSampleVoiceMessage(true);
+    const ff = await generateVoiceMessage(true);
     console.log('handleEmergency() ff=', ff);
 
     // send the mp3 to caller

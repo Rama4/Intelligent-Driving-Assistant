@@ -35,12 +35,12 @@ if you are using git bash from src:
 
 ## install the client's packages
 
-    cd client
+    cd ../client
     yarn install
 
 or if you use npm
 
-    cd client
+    cd ../client
     npm install
 
 ## copy the artists.zip to src folder and extract there.
@@ -49,6 +49,16 @@ or if you use npm
 
     cd  src/DarkWebScraperServer
     python manage.py runserver 0.0.0.0:8000
+
+## Enter the IPv4 address of the PC in the client/.env file
+
+Run "ipconfig" command in Windows to find the IPv4 address.
+Set the IP value in .env file to that value.
+example:
+
+    IP=192.168.0.10
+
+This is so that the mobile app client can connect to the django server on the PC.
 
 ## Run the client
 

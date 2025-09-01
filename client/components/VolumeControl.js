@@ -3,7 +3,19 @@ import {StyleSheet, Text, View} from 'react-native';
 import Button from './shared/Button';
 import {useVolumeControl} from '../hooks/useVolumeControl';
 import {useDispatch, useSelector} from 'react-redux';
-import {selectCognitiveWorkload} from '../redux/slices/trafficContextSlice';
+import {
+  updateTrafficCondition,
+  updateLegDistances,
+  updateLegDurations,
+  updateSpeedReadingIntervals,
+  updateDestinationDistance,
+  updateCurrentSpeed,
+  updateDrivingDistance,
+  updateCognitiveWorkload,
+  selectDrivingDistance,
+  selectCognitiveWorkload,
+  selectSpeedReadingIntervals,
+} from '../redux/slices/trafficContextSlice';
 import {CognitiveWorkloadType} from '../utils/constants';
 import {useNavigation} from '@react-navigation/native';
 
@@ -24,6 +36,8 @@ export default function VolumeControl() {
   const {volume, increaseVolume, decreaseVolume, setVolume, cleanup} =
     useVolumeControl();
   const _cognitiveWorkload = useSelector(selectCognitiveWorkload);
+
+  const currRoadCondition = 1;
 
   let slow_object = new MovingAverage(5);
 
@@ -120,9 +134,7 @@ export default function VolumeControl() {
 
     if (increase) {
       await increaseVolume(amount);
-    } else {
-      await decreaseVolume(amount);
-    }
+    } else await decreaseVolume(amount);
 
     if (_cognitiveWorkload === CognitiveWorkloadType.NCW) {
       slow_object.add(volume - prevVolume);

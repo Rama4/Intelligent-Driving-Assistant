@@ -1,0 +1,42 @@
+fetchDirections_response  = {"geocoded_waypoints": [{"geocoder_status": "OK", "place_id": "ChIJD3S_xewIK4cRGpVdrFVekWg", "types": [Array]}, {"geocoder_status": "OK", "partial_match": true, "place_id": "ChIJpXADM1wOK4cRQu5W4tU19YI", "types": [Array]}], "routes": [{"bounds": [Object], "copyrights": "Map data ©2023", "legs": [Array], "overview_polyline": [Object], "summary": "US-60 W", "warnings": [Array], "waypoint_order": [Array]}], "status": "OK"}
+
+route =  {"bounds": {"northeast": {"lat": 33.4483008, "lng": -111.9194739}, "southwest": {"lat": 33.3856696, "lng": -111.9877366}}, "copyrights": "Map data ©2023", "legs": [{"distance": [Object], "duration": [Object], "end_address": "Phoenix Sky Harbor International Airport (PHX), 3400 Sky Hbr Blvd, Phoenix, AZ 85034, USA", "end_location": [Object], "start_address": "1215 E Vista Del Cerro Dr, Tempe, AZ 85281, USA", "start_location": [Object], "steps": [Array], "traffic_speed_entry": [Array], "via_waypoint": [Array]}], "overview_polyline": {"points": "kh|jEtgbjT?j@E|@E\\Op@w@lBSf@Mh@KjADjX?~AhA?fDAbHAjIBlH@rT@xDA|D@rNBxT?xRNfMFtAA^?FJB@j@D|A@BfAFbBX|G^bOB~CDNFN?n@?lA@fC?|F@vQ?nBBxC?vE@pD?bE?lACt@?|CAd@?jE?pU?xWA|EG|BY`EQ~A]tBq@bDsAdF{AvGs@~DQvAYrC_AbLSjBYbBW|@a@~@m@hAu@dAmAfA{@j@kAf@eB`@{AN{AFsCAq@@IBMPiAAcGGwSOqFEmDCuBEcB?qBHaDT{ARkB^}Bl@sAb@qChAyAt@k@ZoDvCMCM@g@VkBrAaDfCc@^eBbB}@~@oAfBeAlAoAzAq@fAQh@[jA]zBMn@St@[t@wB`Dq@dAeAtAiAv@eAb@yAXaBV}APcABsA?a@AKFeEEqA?kBPiBRk@Bo@@[AwCAmGE{KIcQQmOKeHRoIZo@Du@Ba@DkF\\_BJoF\\uHv@oKpAqFx@oLrBiB\\_BXQIe@DcBR_Gj@uHj@U@e@L]Ne@Zg@j@EH]XUEUCC^AJCZCd@UzEKtEGjCK|CGnDErBvF?vBAfBD|@F~Fb@xBTvAN`BLdC?h@AdBQ~@MxAYpA_@pAe@b@GXKl@WjAo@nA_A"}, "summary": "US-60 W", "warnings": [], "waypoint_order": []}
+
+LOG  Leg 1:
+ LOG  Duration: 1 min
+ LOG  Distance: 0.4 mi
+ LOG  Leg 2:
+ LOG  Duration: 4 mins
+ LOG  Distance: 1.7 mi
+ LOG  Leg 3:
+ LOG  Duration: 2 mins
+ LOG  Distance: 1.5 mi
+ LOG  Leg 4:
+ LOG  Duration: 1 min
+ LOG  Distance: 1.1 mi
+ LOG  Leg 5:
+ LOG  Duration: 1 min
+ LOG  Distance: 1.0 mi
+ LOG  Leg 6:
+ LOG  Duration: 1 min
+ LOG  Distance: 0.3 mi
+ LOG  Leg 7:
+ LOG  Duration: 3 mins
+ LOG  Distance: 2.5 mi
+ LOG  Leg 8:
+ LOG  Duration: 1 min
+ LOG  Distance: 0.3 mi
+ LOG  Leg 9:
+ LOG  Duration: 2 mins
+ LOG  Distance: 0.4 mi
+ LOG  Leg 10:
+ LOG  Duration: 2 mins
+ LOG  Distance: 0.6 mi
+ LOG  Leg 11:
+ LOG  Duration: 1 min
+ LOG  Distance: 0.1 mi
+
+speeds = [{"endPolylinePointIndex": 6, "speed": "SLOW", "startPolylinePointIndex": 0}, {"endPolylinePointIndex": 8, "speed": "NORMAL", "startPolylinePointIndex": 6}, {"endPolylinePointIndex": 9, "speed": "SLOW", "startPolylinePointIndex": 8}, {"endPolylinePointIndex": 10, "speed": "NORMAL", "startPolylinePointIndex": 9}, {"endPolylinePointIndex": 11, "speed": "SLOW", "startPolylinePointIndex": 10}, {"endPolylinePointIndex": 12, "speed": "NORMAL", "startPolylinePointIndex": 11}, {"endPolylinePointIndex": 14, "speed": "SLOW", "startPolylinePointIndex": 12}, {"endPolylinePointIndex": 15, "speed": "NORMAL", "startPolylinePointIndex": 14}, {"endPolylinePointIndex": 17, "speed": "SLOW", "startPolylinePointIndex": 15}, {"endPolylinePointIndex": 116, "speed": "NORMAL", "startPolylinePointIndex": 17}, {"endPolylinePointIndex": 122, "speed": "SLOW", "startPolylinePointIndex": 116}, {"endPolylinePointIndex": 127, "speed": "NORMAL", "startPolylinePointIndex": 122}, {"endPolylinePointIndex": 128, "speed": "SLOW", "startPolylinePointIndex": 127}, {"endPolylinePointIndex": 143, "speed": "NORMAL", "startPolylinePointIndex": 128}]
+
+
+ 

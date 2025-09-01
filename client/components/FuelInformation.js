@@ -1,6 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {setUpdateIntervalForType, SensorTypes} from 'react-native-sensors';
+import {
+  accelerometer,
+  setUpdateIntervalForType,
+  SensorTypes,
+} from 'react-native-sensors';
+import {pairwise, startWith, skip} from 'rxjs/operators';
+import Button from './shared/Button';
+
+import {useSelector, useDispatch} from 'react-redux';
+import {selectRespRate, setRespRate} from '../redux/slices/appSlice';
+import {
+  incrementPeaks,
+  updatePeaks,
+  selectPeaks,
+} from '../redux/slices/emergencySlice';
+
+const MeasuringIntervalSeconds = 45;
+const AccelerometerUpdateIntervalMS = 300;
+const RespiratoryMeasurementThreshold = 0.08;
+const RespRateMultiplicationFactor = 60;
+const NumReadingsSkip = 1000 / AccelerometerUpdateIntervalMS;
 
 setUpdateIntervalForType(
   SensorTypes.accelerometer,
@@ -12,8 +32,13 @@ const MinVolume = 0;
 const FuelCapacityMiles = 100;
 
 export default function FuelInformation() {
+  const dispatch = useDispatch();
+  const _respRate = useSelector(selectRespRate);
+  const _peaks = useSelector(selectPeaks);
+
   [miles, setMiles] = useState(FuelCapacityMiles);
   [drivingScore, setDrivingScore] = useState(5);
+  let readingValues = [];
 
   useEffect(() => {
     console.log('miles=', miles);
@@ -22,13 +47,9 @@ export default function FuelInformation() {
   const onVolumeChange = (increase = true) => {
     console.log('onVolumeChange()');
     setVolume(v => {
-      if (increase && v < MaxVolume) {
-        return v + 1;
-      } else if (!increase && v > MinVolume) {
-        return v - 1;
-      } else {
-        return v;
-      }
+      if (increase && v < MaxVolume) return v + 1;
+      else if (!increase && v > MinVolume) return v - 1;
+      else return v;
     });
   };
 

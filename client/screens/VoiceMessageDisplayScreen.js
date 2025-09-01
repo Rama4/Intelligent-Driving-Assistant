@@ -1,80 +1,34 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {FlatList, View, Text, StyleSheet, Pressable} from 'react-native';
+import Contacts from 'react-native-contacts';
+import {PermissionsAndroid} from 'react-native';
 import Button from '../components/shared/Button';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {selectVms} from '../redux/slices/voicemessageSlice';
 import voicemessageService from '../services/voicemessageService';
-import SoundPlayer from '../components/SoundPlayer';
-
-import Sound from 'react-native-sound';
-import {FileDirectory} from '../utils/constants';
 
 export default function VoiceMessageDisplayScreen() {
+  const dispatch = useDispatch();
+  const [contacts, setContacts] = useState([]);
   const [selectedSymptom, setSelectedSymptom] = useState(-1);
   const vms = useSelector(selectVms);
-  const {syncVoicemails, loadInitialVoiceMessages} = voicemessageService();
-
-  const [soundObj, setSoundObj] = useState(null);
-
-  useEffect(() => {
-    const init = async () => {
-      await loadInitialVoiceMessages();
-    };
-    init();
-  }, []);
+  const {syncVoicemails} = voicemessageService();
 
   useEffect(() => {
     console.log('VoiceMessageDisplayScreen vms=', vms);
-    if (vms?.length) {
-      loadSound();
-    }
   }, [vms]);
 
   const syncAllVms = async () => {
     console.log('syncAllVms()');
     await syncVoicemails();
     console.log('syncAllVms() sync complete');
+    // sampleApiCall();
   };
 
   const onSymptomPress = index => {
-    console.log('selected:', index);
+    console.log('selected:', contacts[index]);
     setSelectedSymptom(index);
   };
-
-  const loadSound = useCallback(() => {
-    console.log('loadSound()');
-    const audioFileName =
-      vms[selectedSymptom || 0]?.fileName || 'sample_accident_voicemail.mp3';
-
-    const sound = new Sound(audioFileName, FileDirectory, error => {
-      if (error) {
-        console.log('loadSound(): failed to load the sound', error);
-        return;
-      }
-      // when loaded successfully
-      console.log('loadSound() sound loaded:', sound.isLoaded());
-      setSoundObj(sound);
-    });
-  }, [vms, selectedSymptom]);
-
-  const getFormattedDateTime = time => {
-    return `${formattedTime(time)}, ${formattedDate(time)}`;
-  };
-
-  const formattedTime = currentTime =>
-    new Date(currentTime).toLocaleString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    });
-
-  const formattedDate = currentTime =>
-    new Date(currentTime).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
 
   const renderVmDetails = useCallback(
     (vm, index) => {
@@ -90,22 +44,17 @@ export default function VoiceMessageDisplayScreen() {
           onPress={() => onSymptomPress(index)}>
           <View style={styles.contactCon}>
             <View style={styles.imgCon}>
-              <View style={styles.placeholder} />
+              <View style={styles.placeholder}></View>
             </View>
             <View style={styles.contactDat}>
               <Text style={styles.name}>{vm?.from || ' '}</Text>
-              <Text style={styles.phoneNumber}>
-                {getFormattedDateTime(vm?.dateCreated) || ' '}
-              </Text>
-              <View style={styles.soundPlayerContainer}>
-                <SoundPlayer sound={soundObj} />
-              </View>
+              <Text style={styles.phoneNumber}>{vm?.duration || ''}</Text>
             </View>
           </View>
         </Pressable>
       );
     },
-    [selectedSymptom, soundObj],
+    [selectedSymptom],
   );
 
   const keyExtractor = (item, idx) => {
@@ -118,6 +67,10 @@ export default function VoiceMessageDisplayScreen() {
   const separator = () => {
     //add a seperator component for each item with green color:
     return <View style={styles.separator} />;
+  };
+
+  const onDone = () => {
+    console.log('contact selection done');
   };
 
   return (
@@ -190,12 +143,6 @@ const styles = StyleSheet.create({
   },
   contactDat: {
     flex: 1,
-    justifyContent: 'center',
-    paddingLeft: 5,
-  },
-  soundPlayerContainer: {
-    flex: 1,
-    flexDirection: 'row',
     justifyContent: 'center',
     paddingLeft: 5,
   },

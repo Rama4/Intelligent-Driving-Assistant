@@ -9,10 +9,7 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     addVoicemessage: (state, action) => {
-      const _vms = state.vms;
-      _vms.push(action.payload);
-      _vms.sort((a, b) => b.dateCreated - a.dateCreated);
-      state.vms = _vms;
+      state.vms.push(action.payload);
     },
     resetVoicemessages: (state, action) => {
       state.vms = [];
@@ -21,9 +18,8 @@ const appSlice = createSlice({
       const vmindex = state.vms.findIndex(
         vm => vm.id === action.payload?.id || '',
       );
-      if (vmindex !== -1) {
+      if (vmindex !== -1)
         state.vms[vmindex].read = action.payload?.read || false;
-      }
     },
   },
 });

@@ -8,6 +8,7 @@ import {store} from './redux/store';
 import {PermissionsAndroid} from 'react-native';
 import ContactsList from './screens/ContactsList';
 import MapsScreen from './screens/MapsScreen';
+import VoiceMessageTestScreen from './screens/Test/VoiceMessageTestScreen';
 import VoiceMessageDisplayScreen from './screens/VoiceMessageDisplayScreen';
 
 const Stack = createNativeStackNavigator();
@@ -50,6 +51,13 @@ export default function App() {
             component={MapsScreen}
             options={{
               title: 'Driving Trip Dashboard',
+            }}
+          />
+          <Stack.Screen
+            name="VoiceMessageTestScreen"
+            component={VoiceMessageTestScreen}
+            options={{
+              title: 'Voice messages list',
             }}
           />
           <Stack.Screen

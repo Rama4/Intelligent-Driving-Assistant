@@ -4,7 +4,7 @@ import ApiService from '../services/apiService';
 import {SentVmsFolderPath} from '../utils/constants';
 
 export const useCallDetector = () => {
-  const {generateSampleVoiceMessage} = voicemessageService();
+  const {generateVoiceMessage} = voicemessageService();
   const {upload} = ApiService();
   let callDetector = null;
   const startListenerTapped = () => {
@@ -38,7 +38,7 @@ export const useCallDetector = () => {
         } else if (event === 'Missed') {
           console.log('call missed! sending voiecmail..');
           //create a vm to send to the caller and save as mp3 file
-          const ff = await generateSampleVoiceMessage();
+          const ff = await generateVoiceMessage();
           console.log('ff=', ff);
           // send the mp3 to caller
           const fileName = ff;

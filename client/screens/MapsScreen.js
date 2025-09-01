@@ -18,7 +18,7 @@ import Button from '../components/shared/Button';
 import axios from 'axios';
 import {ROUTE_API_KEY} from '@env';
 import {CognitiveWorkloadType, TrafficConditionType} from '../utils/constants';
-import AudioPlayerContainer from '../components/AudioPlayerContainer';
+import AudioPlayer from '../components/AudioPlayer';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -140,9 +140,7 @@ export default function MapsScreen({navigation}) {
       .subscribe({
         next: ([previous, current]) => {
           // omit first value
-          if (!previous) {
-            return;
-          }
+          if (!previous) return;
           if (previous !== current) {
             // console.log('previous=', previous);
             // console.log('current=', current);
@@ -192,9 +190,7 @@ export default function MapsScreen({navigation}) {
       subscription = _getSubscription();
     }
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      if (subscription) subscription.unsubscribe();
     };
   }, [enableAccelerometer]);
 
@@ -596,9 +592,7 @@ export default function MapsScreen({navigation}) {
 
     if (increase) {
       await increaseVolume(amount);
-    } else {
-      await decreaseVolume(amount);
-    }
+    } else await decreaseVolume(amount);
 
     const diff = volume - prevVolume;
     if (!diff) {
@@ -729,16 +723,14 @@ export default function MapsScreen({navigation}) {
             onBlur={() => setIsKeyboardOpen(false)}
             style={styles.input}
             value={sourceAddress}
-            onChangeText={onSourceAddressChange}
-          />
+            onChangeText={onSourceAddressChange}></TextInput>
           <Text style={styles.label}>Destination Co-ordinates:</Text>
           <TextInput
             onFocus={() => setIsKeyboardOpen(true)}
             onBlur={() => setIsKeyboardOpen(false)}
             style={styles.input}
             value={destinationAddress}
-            onChangeText={onDestinationAddressChange}
-          />
+            onChangeText={onDestinationAddressChange}></TextInput>
           <Button
             disabled={isKeyboardOpen}
             onPress={onGetRouteTrafficInfoPress}
@@ -760,7 +752,7 @@ export default function MapsScreen({navigation}) {
               onPress={stopDriving}
             />
           </View>
-          <AudioPlayerContainer
+          <AudioPlayer
             fetchPlaylist={isFetchPlaylist}
             onDoneFetching={onDoneFetching}
           />

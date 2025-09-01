@@ -277,7 +277,8 @@ const downloadFile2 = async (fileName, fileDirectory) => {
 const ___tts = () => {
   return new Promise((resolve, reject) => {
     const url =
-      'https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyAJI80z3GDxkcPIxUW1ggUWuhJlsbP_kX8';
+      'https://texttospeech.googleapis.com/v1/text:synthesize?key='+
+      process.env.GOOGLE_API_KEY;
     const location = 'Phoenix';
     const time = '30 minutes';
     const text = `Hi, I am currently driving in ${location} and unable to take your call. I will call you back after I reach my destination in ${time}. Thank you for your understanding.`;
@@ -371,11 +372,11 @@ const _tts = async () => {
     const name = 'Rama';
     const location = 'Phoenix';
     const time = '30 minutes';
-    const text = 'This is Rama';
+    const text = `This is Rama`;
     // const text = `Hi, this is ${name}. I am currently driving in ${location} and unable to take your call. I will call you back after I reach my destination in ${time}. Thank you for your understanding.`;
     // const text = getText('Rama', 'Phoenix', '30 minutes');
     console.log('text=', text);
-    const apiKey = 'AIzaSyAJI80z3GDxkcPIxUW1ggUWuhJlsbP_kX8'; // Replace with your API key
+    const apiKey = process.env.GOOGLE_API_KEY;
     const url =
       'https://texttospeech.googleapis.com/v1/text:synthesize?key=' + apiKey;
 

@@ -124,9 +124,7 @@ export default function VolumeControl() {
 
     if (increase) {
       await increaseVolume(amount);
-    } else {
-      await decreaseVolume(amount);
-    }
+    } else await decreaseVolume(amount);
 
     if (_cognitiveWorkload === CognitiveWorkloadType.NCW) {
       slow_object.add(volume - prevVolume);

@@ -3,7 +3,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import RNFS from 'react-native-fs';
-
 import {
   selectVms,
   addVoicemessage,
@@ -14,20 +13,32 @@ import ApiService from './apiService';
 import {
   vmsFolderName,
   SentFolderName,
-  FileDirectory,
+  fileDirectory,
   SentVmsFolderPath,
 } from '../utils/constants';
 import {
+  updateTrafficCondition,
+  updateLegDistances,
+  updateLegDurations,
+  updateSpeedReadingIntervals,
+  updateDestinationDistance,
+  updateCurrentSpeed,
+  updateDrivingDistance,
+  incrementDrivingDistance,
+  updateCognitiveWorkload,
+  updateDrivingIntervalRef,
+  updateDistanceToDestination,
+  updateTimeToDestination,
   selectDrivingDistance,
+  selectCognitiveWorkload,
+  selectSpeedReadingIntervals,
+  selectDrivingIntervalRef,
+  selectDrivingScore,
   selectTimeToDestination,
+  selectDistanceToDestination,
   selectDestinationDistanceP,
+  updateDestinationDistanceP,
 } from '../redux/slices/trafficContextSlice';
-import {
-  createNewFolder,
-  getFileCreationDate,
-  getFilePath,
-  getFilesInFolder,
-} from '../utils/fsUtils';
 
 const SampleVoicemailText =
   "Hey there! I'm currently on the road and focused on driving, so I can't take your call right now. Feel free to shoot me a text, and I'll get back to you as soon as it's safe. Thanks for understanding!";
@@ -46,98 +57,96 @@ export default function voicemessageService() {
   const vms = useSelector(selectVms);
   const _drivingDistance = useSelector(selectDrivingDistance);
   const _destinationDistanceP = useSelector(selectDestinationDistanceP);
+  const _distanceToDestination = useSelector(selectDistanceToDestination);
   const _timeToDestination = useSelector(selectTimeToDestination);
 
   const {listAllVoicemails, downloadFiles, tts} = ApiService();
 
   useEffect(() => {
-    // loadInitialVoiceMessages();
-  }, [vms]);
+    loadInitialVoiceMessages();
+  }, []);
 
   const loadInitialVoiceMessages = async () => {
-    try {
-      // populate voice message list from vms folder locally
-      console.log('loadInitialVoiceMessages() vms=', vms);
-      // create required folders for sending and receiving vms
-      await createNewFolder(RNFS.DownloadDirectoryPath, vmsFolderName);
-      await createNewFolder(RNFS.DownloadDirectoryPath, SentFolderName);
-      const fileNames = await getFilesInFolder(FileDirectory);
-      console.log(
-        'loadInitialVoiceMessages() files in incoming folder =',
-        fileNames,
-      );
-      for (const fileName of fileNames) {
-        const exists = vms?.some(obj => obj?.fileName === fileName);
-        let fileCreatedTime = null;
-        if (!exists) {
-          addNewVoicemessage(fileName);
-          fileCreatedTime = new Date().getTime();
-          console.log(
-            `loadInitialVoiceMessages() file ${fileName} created now at ${fileCreatedTime}`,
-          );
-        } else {
-          const fileCreatedDate = await getFileCreationDate(
-            getFilePath(fileName),
-          );
-          fileCreatedTime = new Date(fileCreatedDate).getTime();
-          console.log(
-            `loadInitialVoiceMessages() file ${fileName} created at ${fileCreatedTime}`,
-          );
-        }
-      }
-    } catch (error) {
-      console.error('loadInitialVoiceMessages() ', error);
+    // populate voice message list from vms folder locally
+    console.log('loadInitialVoiceMessages()');
+    // create required folders for sending and receiving vms
+    await createNewFolder(RNFS.DownloadDirectoryPath, vmsFolderName);
+    await createNewFolder(RNFS.DownloadDirectoryPath, SentFolderName);
+    const fileNames = await getFilesInFolder(fileDirectory);
+    console.log(
+      'loadInitialVoiceMessages() loadInitialVoiceMessages=',
+      fileNames,
+    );
+    for (const fileName of fileNames) {
+      const exists = vms.some(obj => obj?.from === fileName);
+      if (!exists) addNewVoicemessage(fileName);
     }
   };
 
   useEffect(() => {
-    console.log('voicemessageService: vms=', vms);
+    console.log('vms=', vms);
   }, [vms]);
 
   const getAllVoicemails = useCallback(() => {
     return vms;
   }, [vms]);
 
-  const syncVoicemails = async () => {
+  const createNewFolder = async (path, folderName) => {
+    const folderPath = `${path}/${folderName}`;
     try {
-      console.log('syncVoicemails() ');
-      // get list of voicemessages from server
-      const newVms = await listAllVoicemails();
-      if (!newVms) {
-        console.warn('syncVoicemails() No new Voicemails found');
-        return;
+      const folderExists = await RNFS.exists(folderPath);
+      if (folderExists) {
+        console.log(`path already exists: ${folderPath}`);
+      } else {
+        await RNFS.mkdir(folderPath);
+        console.log(folderName, 'created');
       }
-      const sortedVms = newVms?.sort((a, b) => b.dateCreated - a.dateCreated);
-      // download vms
-      console.log(
-        'syncVoicemails() newVms = ',
-        newVms,
-        'sortedVms=',
-        sortedVms,
-      );
-      const folderExists = await RNFS.exists(FileDirectory);
-      if (!folderExists) {
-        console.log('folder doesnt exist, creating one');
-        await createNewFolder(RNFS.DownloadDirectoryPath, vmsFolderName);
-      }
-      const filesToDownload = [];
-      for (const fileName of sortedVms?.file_names) {
-        const fileExists = await RNFS.exists(getFilePath(fileName));
-        console.log('syncVoicemails() fileExists=', fileExists);
-        if (fileExists) {
-          console.log('syncVoicemails()', fileName, 'file already exists');
-        } else {
-          filesToDownload.push(fileName);
-          // add metadata to redux
-          addNewVoicemessage(fileName);
-        }
-      }
-      console.log('syncVoicemails() filesToDownload=', filesToDownload);
-      await downloadFiles(filesToDownload, FileDirectory);
     } catch (error) {
-      console.error('syncVoicemails() Error:', error);
-      return null;
+      console.error('Error creating', folderName, error);
     }
+  };
+
+  const getFilesInFolder = async folderPath => {
+    try {
+      const result = await RNFS.readDir(folderPath);
+      const fileNames = result
+        .filter(item => item.isFile())
+        .map(file => file.name);
+      console.log('File names in the folder:', fileNames);
+      return fileNames;
+    } catch (error) {
+      console.error('Error reading folder:', error);
+      return [];
+    }
+  };
+
+  const getpath = (fileDirectory, filename) => fileDirectory + '/' + filename;
+
+  const syncVoicemails = async () => {
+    console.log('syncVoicemails() ');
+    // get list of voicemessages from server
+    const newVms = await listAllVoicemails();
+    // download vms
+    console.log('syncVoicemails() newVms = ', newVms);
+    const folderExists = await RNFS.exists(fileDirectory);
+    if (!folderExists) {
+      console.log('folder doesnt exist, creating one');
+      await createNewFolder(RNFS.DownloadDirectoryPath, vmsFolderName);
+    }
+    const filesToDownload = [];
+    for (const fileName of newVms?.file_names) {
+      const fileExists = await RNFS.exists(getpath(fileDirectory, fileName));
+      console.log('syncVoicemails() fileExists=', fileExists);
+      if (fileExists) {
+        console.log('syncVoicemails()', fileName, 'file already exists');
+      } else {
+        filesToDownload.push(fileName);
+        // add metadata to redux
+        addNewVoicemessage(fileName);
+      }
+    }
+    console.log('syncVoicemails() filesToDownload=', filesToDownload);
+    await downloadFiles(filesToDownload, fileDirectory);
   };
 
   const saveFile = async data => {
@@ -182,23 +191,16 @@ export default function voicemessageService() {
     console.log('generateVoiceMessage() file saved, name=', fileName);
     return fileName;
   };
-  const generateSampleVoiceMessage = async (emergency = false) => {
-    const fileName = emergency
-      ? 'sample_accident_voicemail.mp3'
-      : 'sample_driving_voicemail.mp3';
-    console.log('generateVoiceMessage() file saved, name=', fileName);
-    return fileName;
-  };
 
   const addNewVoicemessage = useCallback(filename => {
     const newVm = {
       id: uuidv4(),
       dateCreated: new Date().getTime(),
       read: false,
-      from: 'Rama Narasimhan',
+      from: filename,
+      to: '9000',
       duration: 25,
       text: SampleVoicemailText,
-      fileName: filename,
     };
     dispatch(addVoicemessage(newVm));
   }, []);
@@ -218,7 +220,5 @@ export default function voicemessageService() {
     markVmRead,
     syncVoicemails,
     generateVoiceMessage,
-    generateSampleVoiceMessage,
-    loadInitialVoiceMessages,
   };
 }

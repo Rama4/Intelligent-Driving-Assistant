@@ -17,6 +17,7 @@ console.log('IP=', IP);
 console.log('HOST_URL=', HOST_URL);
 
 export default function ApiService() {
+  const dispatch = useDispatch();
   const _collisionAccelerometer = useSelector(
     selectCollisionDetectedAcceleromter,
   );
@@ -80,7 +81,8 @@ export default function ApiService() {
 
   const tts = async text => {
     const url =
-      'https://texttospeech.googleapis.com/v1/text:synthesize?key=AIzaSyAJI80z3GDxkcPIxUW1ggUWuhJlsbP_kX8';
+      'https://texttospeech.googleapis.com/v1/text:synthesize?key=' +
+      process.env.GOOGLE_API_KEY;
 
     const data = {
       input: {
@@ -165,9 +167,7 @@ export default function ApiService() {
             },
           });
 
-          if (res.status === 200) {
-            console.log('chunk sent successfully');
-          }
+          if (res.status === 200) console.log('chunk sent successfully');
           offset += chunkSize;
           chunkIndex++;
         }
@@ -260,7 +260,7 @@ export default function ApiService() {
   const getTopVideoIdsFromArtist = async artistName => {
     try {
       console.log('getTopVideoIdsFromArtist()');
-      const YOUTUBE_KEY = 'AIzaSyDRopxcwMb3OG_380CmBAI7Ak4RUnr2YFs';
+      const YOUTUBE_KEY = process.env.GOOGLE_API_KEY;
       const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${artistName}&type=video&key=${YOUTUBE_KEY}`;
       const response = await axios.get(url);
       console.log('getTopVideoIdsFromArtist() response=', response);

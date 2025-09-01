@@ -24,16 +24,12 @@ const ContactsList = ({navigation}) => {
   }, [emergencyContacts]);
 
   const onSymptomPress = (contact, index) => {
-    console.log('selected contact', contact);
+    console.log('selected contact contact', contact);
     setSelectedSymptom(index);
     if (contact?.phoneNumbers?.length) {
       for (const phoneNumber of contact?.phoneNumbers) {
         if (phoneNumber?.number?.length >= 10) {
-          dispatch(
-            updateContacts(
-              `${contact?.displayName} (ph: ${phoneNumber?.number})`,
-            ),
-          );
+          dispatch(updateContacts(phoneNumber?.number));
           return;
         }
       }

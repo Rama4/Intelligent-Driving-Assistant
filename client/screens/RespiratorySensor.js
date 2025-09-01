@@ -50,9 +50,7 @@ export default function RespiratorySensor() {
       .subscribe({
         next: ([previous, current]) => {
           // omit first value
-          if (!previous) {
-            return;
-          }
+          if (!previous) return;
           if (previous !== current) {
             // console.log('previous=', previous);
             // console.log('current=', current);
@@ -87,9 +85,7 @@ export default function RespiratorySensor() {
       subscription = _getSubscription();
     }
     return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
+      if (subscription) subscription.unsubscribe();
     };
   }, [enableAccelerometer]);
 

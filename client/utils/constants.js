@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 
 export const vmsFolderName = 'vms';
 export const SentFolderName = 'VmsSent';
-export const FileDirectory = `${RNFS.DownloadDirectoryPath}/${vmsFolderName}`;
+export const fileDirectory = `${RNFS.DownloadDirectoryPath}/${vmsFolderName}`;
 export const SentVmsFolderPath = `${RNFS.DownloadDirectoryPath}/${SentFolderName}`;
 
 export const stringWithoutSpaces = str => {
